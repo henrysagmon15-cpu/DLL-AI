@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini DLL Architect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @page {
+            size: landscape;
+            margin: 1cm;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            body {
+                background-color: white !important;
+                margin: 0;
+                padding: 0;
+                font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif !important;
+            }
+            #root {
+                width: 100% !important;
+            }
+            .page-break {
+                page-break-after: always;
+            }
+            thead {
+                display: table-header-group;
+            }
+            tr {
+                page-break-inside: avoid;
+            }
+        }
+        body {
+            font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
+        }
+        .dll-table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        .dll-table td, .dll-table th {
+            border: 1px solid #000;
+            padding: 6px;
+            font-size: 0.7rem;
+            line-height: 1.1;
+            vertical-align: top;
+            word-wrap: break-word;
+        }
+        thead {
+            display: table-header-group;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.38.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0"
+  }
+}
+</script>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-900">
+    <div id="root"></div>
+</body>
+</html>

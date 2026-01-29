@@ -1,0 +1,5 @@
+{
+  "name": "VKIS Automated Daily Lesson Log Creator",
+  "description": "A sophisticated AI-powered Daily Lesson Log (DLL) generator for educators, following the DepEd K-12 template. Automatically expands competencies into detailed daily objectives and procedures tailored to specific grade levels.",
+  "requestFramePermissions": []
+}
