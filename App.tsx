@@ -3,7 +3,7 @@ import { DLLInput, GeneratedDLL } from './types';
 import { generateDLLContent } from './services/geminiService';
 import { DLLForm } from './components/DLLForm';
 import { DLLPreview } from './components/DLLPreview';
-import { Wand2, Loader2, Printer, ArrowLeft, FileText, ChevronDown, Copy, Check, AlertCircle } from 'lucide-react';
+import { Wand2, Loader2, Printer, ArrowLeft, FileText, ChevronDown, Copy, Check, AlertCircle, Settings } from 'lucide-react';
 
 const App: React.FC = () => {
   const [formData, setFormData] = useState<DLLInput>({
@@ -28,7 +28,7 @@ const App: React.FC = () => {
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedDLL, setGeneratedDLL] = useState<GeneratedDLL | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<React.ReactNode | null>(null);
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
 
@@ -49,7 +49,22 @@ const App: React.FC = () => {
       setGeneratedDLL(result);
     } catch (err: any) {
       console.error(err);
-      setError(err.message || 'Failed to generate DLL. Please try again.');
+      if (err.message === "API_KEY_MISSING") {
+        setError(
+          <div className="space-y-2">
+            <p className="font-bold">Missing Gemini API Key!</p>
+            <p className="text-xs font-normal opacity-90">To fix this in Vercel:</p>
+            <ol className="text-xs font-normal list-decimal list-inside opacity-90">
+              <li>Go to your Vercel Project Settings</li>
+              <li>Add an Environment Variable named <code className="bg-red-100 px-1 rounded">API_KEY</code></li>
+              <li>Paste your Gemini API key from <a href="https://aistudio.google.com/app/apikey" target="_blank" className="underline font-bold">AI Studio</a></li>
+              <li><strong>Important:</strong> Trigger a new deployment (Redeploy) for the changes to take effect.</li>
+            </ol>
+          </div>
+        );
+      } else {
+        setError(err.message || 'Failed to generate DLL. Please try again.');
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -198,8 +213,8 @@ const App: React.FC = () => {
             </button>
             {error && (
               <div className="p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg flex gap-3">
-                <AlertCircle size={20} className="shrink-0" />
-                <p className="text-sm font-bold">{error}</p>
+                <AlertCircle size={20} className="shrink-0 mt-1" />
+                <div className="text-sm font-bold">{error}</div>
               </div>
             )}
           </div>

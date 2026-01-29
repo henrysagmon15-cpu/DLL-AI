@@ -2,8 +2,13 @@ import { GoogleGenAI, Type } from "@google/genai";
 import { DLLInput, GeneratedDLL } from "../types";
 
 export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL> => {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const apiKey = process.env.API_KEY;
   
+  if (!apiKey || apiKey === "undefined" || apiKey.trim() === "") {
+    throw new Error("API_KEY_MISSING");
+  }
+
+  const ai = new GoogleGenAI({ apiKey });
   const model = "gemini-3-flash-preview";
 
   const textPrompt = `
@@ -120,6 +125,7 @@ export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL>
     return JSON.parse(text.trim());
   } catch (error: any) {
     console.error("Gemini Error:", error);
+    if (error.message === "API_KEY_MISSING") throw error;
     throw new Error(`Architectural Failure: ${error.message || "Unknown error occurred during DLL generation."}`);
   }
 };
