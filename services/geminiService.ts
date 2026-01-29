@@ -5,51 +5,58 @@ import { DLLInput, GeneratedDLL } from "../types";
 export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL> => {
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
+  const model = "gemini-3-flash-preview";
+
   const textPrompt = `
-    Generate a highly detailed DepEd K-12 Daily Lesson Log (DLL) for a full week (Monday to Friday) based on the following input:
+    Generate a professional and detailed DepEd K-12 Daily Lesson Log (DLL) for a full week (Monday to Friday).
+
+    PRIMARY INSTRUCTIONS:
+    1. EXTRACATION FIRST: If an Exemplar/Reference (Text: "${input.lessonExemplar || "None"}" or attached file) is provided, prioritize extracting the Learning Competencies and Objectives directly from it.
+    2. MANDATORY COMPETENCY: If NO exemplar/file is provided, use this manually provided competency: "${input.competency}".
+    3. OBJECTIVES LIMIT: Provide EXACTLY 1 to 2 learning objectives per day. These objectives must be derived from the competency.
+    4. 45-MINUTE FEASIBILITY: Ensure that the objectives and the entire procedure (Review to Evaluation) can be realistically finished within a 45-minute lesson.
+    5. LOGICAL SEQUENCE: The 5-day flow must be a progressive sequence of the same learning competency or set of related competencies.
+
+    PEDAGOGICAL STRUCTURE:
+    - CONTENT STANDARD: What the learners should know.
+    - PERFORMANCE STANDARD: What the learners should be able to do.
+    - PROCEDURES (A-J): Detailed daily steps. Step F must be a concrete Formative Assessment. Step I must be a specific Evaluation task with 3-5 items.
+    - ANSWER KEY: Provide the correct answers for the Evaluation task in Step I.
+
+    METADATA:
+    - School: ${input.school}
+    - Teacher: ${input.teacher}
     - Grade Level: ${input.gradeLevel}
-    - Learning Area (Subject): ${input.learningArea}
+    - Learning Area: ${input.learningArea}
     - Quarter: ${input.quarter}
     - Week: ${input.week}
-    - Weekly Competency: ${input.competency}
-    - Sources Provided: ${input.sources}
-    - TEXT EXEMPLAR: ${input.lessonExemplar || "No specific text exemplar provided."}
-    - TEACHER'S SPECIFIC PROMPTS: ${input.customInstructions || "No additional specific prompts provided."}
+    - Custom Instructions: ${input.customInstructions}
 
-    CRITICAL FORMATTING RULES:
-    1. DAILY COMPETENCIES: You MUST generate a specific learning competency and description for EACH DAY (Monday-Friday).
-    2. TOPICS: Provide a specific topic name for EACH DAY.
-    3. PROCEDURES: Provide concrete, detailed content for every procedure step (A to J) for every single day.
-    4. LISTS & BULLETS: For objectives, steps, or questions, use CLEAR NEWLINES. For example:
-       1. First item
-       2. Second item
-    5. EVALUATION & ANSWER KEY: In 'Evaluating Learning', provide actual numbered questions (1., 2., 3., etc.). You MUST ALSO generate a corresponding 'Answer Key' for these questions.
-    6. REFERENCE UTILIZATION: Heavily use the provided LESSON EXEMPLAR or ATTACHED FILE as the primary source of truth for technical depth.
-    7. Return valid JSON only.
+    Return the result as a strictly valid JSON object.
   `;
 
   const dayPlanSchema = {
     type: Type.OBJECT,
     properties: {
-      competencyDesc: { type: Type.STRING, description: "The specific description of the competency for this day." },
-      competencyCode: { type: Type.STRING, description: "The K-12 competency code (e.g., S7MT-Ia-1)." },
-      topic: { type: Type.STRING, description: "The specific topic or lesson title for this day." },
+      competencyDesc: { type: Type.STRING, description: "The full description of the DepEd competency." },
+      competencyCode: { type: Type.STRING, description: "The code like S7MT-Ia-1." },
+      topic: { type: Type.STRING, description: "Short title of the daily lesson." },
       objectives: { 
         type: Type.ARRAY, 
         items: { type: Type.STRING },
-        description: "Specific behavioral objectives for this day."
+        description: "Exactly 1 or 2 specific, measurable objectives feasible for a 45-minute lesson."
       },
-      review: { type: Type.STRING, description: "Review of previous lesson or motivation." },
-      purpose: { type: Type.STRING, description: "Establishing a purpose for the lesson." },
-      examples: { type: Type.STRING, description: "Presenting examples/instances of new lesson." },
-      discussion1: { type: Type.STRING, description: "Discussing new concepts and practicing new skills #1." },
-      discussion2: { type: Type.STRING, description: "Discussing new concepts and practicing new skills #2." },
-      mastery: { type: Type.STRING, description: "Developing mastery (Leads to Formative Assessment)." },
-      application: { type: Type.STRING, description: "Finding practical applications of concepts and skills in daily living." },
-      generalization: { type: Type.STRING, description: "Making generalizations and abstractions about the lesson." },
-      evaluation: { type: Type.STRING, description: "Evaluating Learning (Actual quiz content)." },
-      answerKey: { type: Type.STRING, description: "The answer key for the evaluation questions." },
-      remediation: { type: Type.STRING, description: "Additional activities for application or remediation." }
+      review: { type: Type.STRING },
+      purpose: { type: Type.STRING },
+      examples: { type: Type.STRING },
+      discussion1: { type: Type.STRING },
+      discussion2: { type: Type.STRING },
+      mastery: { type: Type.STRING, description: "Leads to formative assessment." },
+      application: { type: Type.STRING },
+      generalization: { type: Type.STRING },
+      evaluation: { type: Type.STRING, description: "Actual quiz questions/tasks." },
+      answerKey: { type: Type.STRING, description: "Answers for the evaluation questions." },
+      remediation: { type: Type.STRING }
     },
     required: ["competencyDesc", "competencyCode", "topic", "objectives", "review", "purpose", "examples", "discussion1", "discussion2", "mastery", "application", "generalization", "evaluation", "answerKey", "remediation"]
   };
@@ -65,47 +72,51 @@ export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL>
     });
   }
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3-pro-preview",
-    contents: { parts },
-    config: {
-      responseMimeType: "application/json",
-      thinkingConfig: { thinkingBudget: 15000 },
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          contentStandards: { type: Type.STRING },
-          performanceStandards: { type: Type.STRING },
-          references: {
-            type: Type.OBJECT,
-            properties: {
-              teacherGuide: { type: Type.STRING },
-              learnerMaterial: { type: Type.STRING },
-              textbook: { type: Type.ARRAY, items: { type: Type.STRING } },
-              additionalResources: { type: Type.ARRAY, items: { type: Type.STRING } },
-              otherResources: { type: Type.STRING }
+  try {
+    const response = await ai.models.generateContent({
+      model: model,
+      contents: { parts },
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            contentStandards: { type: Type.STRING },
+            performanceStandards: { type: Type.STRING },
+            references: {
+              type: Type.OBJECT,
+              properties: {
+                teacherGuide: { type: Type.STRING },
+                learnerMaterial: { type: Type.STRING },
+                textbook: { type: Type.ARRAY, items: { type: Type.STRING } },
+                additionalResources: { type: Type.ARRAY, items: { type: Type.STRING } },
+                otherResources: { type: Type.STRING }
+              },
+              required: ["teacherGuide", "learnerMaterial", "textbook", "additionalResources", "otherResources"]
             },
-            required: ["teacherGuide", "learnerMaterial", "textbook", "additionalResources", "otherResources"]
+            dailyPlans: {
+              type: Type.OBJECT,
+              properties: {
+                monday: dayPlanSchema,
+                tuesday: dayPlanSchema,
+                wednesday: dayPlanSchema,
+                thursday: dayPlanSchema,
+                friday: dayPlanSchema
+              },
+              required: ["monday", "tuesday", "wednesday", "thursday", "friday"]
+            }
           },
-          dailyPlans: {
-            type: Type.OBJECT,
-            properties: {
-              monday: dayPlanSchema,
-              tuesday: dayPlanSchema,
-              wednesday: dayPlanSchema,
-              thursday: dayPlanSchema,
-              friday: dayPlanSchema
-            },
-            required: ["monday", "tuesday", "wednesday", "thursday", "friday"]
-          }
-        },
-        required: ["contentStandards", "performanceStandards", "references", "dailyPlans"]
+          required: ["contentStandards", "performanceStandards", "references", "dailyPlans"]
+        }
       }
-    }
-  });
+    });
 
-  const text = response.text;
-  if (!text) throw new Error("No response generated from AI.");
-  
-  return JSON.parse(text.trim());
+    const text = response.text;
+    if (!text) throw new Error("Received empty text from Gemini.");
+    
+    return JSON.parse(text.trim());
+  } catch (error: any) {
+    console.error("Gemini Error:", error);
+    throw new Error(`Architectural Failure: ${error.message || "Unknown error occurred during DLL generation."}`);
+  }
 };

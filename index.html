@@ -47,13 +47,10 @@
         .dll-table td, .dll-table th {
             border: 1px solid #000;
             padding: 6px;
-            font-size: 0.7rem;
-            line-height: 1.1;
+            font-size: 0.75rem;
+            line-height: 1.2;
             vertical-align: top;
             word-wrap: break-word;
-        }
-        thead {
-            display: table-header-group;
         }
     </style>
 <script type="importmap">
@@ -63,12 +60,15 @@
     "react": "https://esm.sh/react@^19.2.4",
     "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
     "@google/genai": "https://esm.sh/@google/genai@^1.38.0",
-    "lucide-react": "https://esm.sh/lucide-react@^0.563.0"
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
   }
 }
 </script>
 </head>
 <body class="bg-slate-50 min-h-screen text-slate-900">
     <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
 </body>
 </html>

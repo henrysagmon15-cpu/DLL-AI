@@ -1,7 +1,7 @@
 
 import React, { useRef } from 'react';
 import { DLLInput } from '../types';
-import { Upload, X, FileCheck, File as FileIcon, ShieldCheck, Image as ImageIcon } from 'lucide-react';
+import { Upload, X, File as FileIcon, Image as ImageIcon, BookOpen, Sparkles, Info } from 'lucide-react';
 
 interface Props {
   formData: DLLInput;
@@ -42,62 +42,14 @@ export const DLLForm: React.FC<Props> = ({ formData, setFormData }) => {
     if (field === 'logoFile' && logoInputRef.current) logoInputRef.current.value = '';
   };
 
-  const inputClasses = "w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none bg-slate-50";
-  const labelClasses = "block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5";
+  const inputClasses = "w-full p-2.5 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none bg-white text-sm";
+  const labelClasses = "block text-xs font-bold text-slate-600 uppercase mb-1.5";
 
   return (
-    <div className="space-y-6">
-      <div className="p-4 bg-indigo-50/30 rounded-xl border border-indigo-100 mb-4">
-        <label className={`${labelClasses} text-indigo-700 flex justify-between items-center`}>
-          School / Department Logo
-          <span className="text-[10px] lowercase font-normal italic">Optional (Defaults to DepEd Logo)</span>
-        </label>
-        <div 
-          onClick={() => logoInputRef.current?.click()}
-          className={`relative border-2 border-dashed rounded-lg p-4 transition-all cursor-pointer flex items-center gap-4 ${
-            formData.logoFile 
-              ? 'border-indigo-200 bg-white shadow-sm' 
-              : 'border-slate-300 bg-white hover:bg-slate-50 hover:border-indigo-400'
-          }`}
-        >
-          <input 
-            type="file" 
-            ref={logoInputRef} 
-            onChange={(e) => handleFileChange(e, 'logoFile')} 
-            className="hidden" 
-            accept="image/*"
-          />
-          {formData.logoFile ? (
-            <>
-              <div className="h-12 w-12 bg-slate-100 rounded-lg overflow-hidden flex items-center justify-center border border-slate-200">
-                <img src={`data:${formData.logoFile.mimeType};base64,${formData.logoFile.data}`} alt="Logo Preview" className="h-full w-full object-contain" />
-              </div>
-              <div className="flex-1 overflow-hidden">
-                <p className="text-sm font-semibold text-slate-800 truncate">{formData.logoFile.name}</p>
-                <p className="text-[10px] text-indigo-600">Custom logo applied to DLL header</p>
-              </div>
-              <button 
-                onClick={(e) => { e.stopPropagation(); removeFile('logoFile'); }}
-                className="p-1.5 hover:bg-red-50 rounded-full text-red-500 transition-colors"
-              >
-                <X size={16} />
-              </button>
-            </>
-          ) : (
-            <>
-              <div className="bg-slate-100 p-3 rounded-lg text-slate-400">
-                <ImageIcon size={24} />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-slate-600">Upload School Logo</p>
-                <p className="text-[10px] text-slate-400">Click to browse (PNG or JPG)</p>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="space-y-6 bg-white p-6 rounded-xl border border-slate-200 shadow-sm" style={{ fontFamily: '"Century Gothic", CenturyGothic, AppleGothic, sans-serif' }}>
+      
+      {/* Header Info */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className={labelClasses}>School Name</label>
           <input name="school" value={formData.school} onChange={handleChange} className={inputClasses} placeholder="Enter school name" />
@@ -108,7 +60,7 @@ export const DLLForm: React.FC<Props> = ({ formData, setFormData }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
           <label className={labelClasses}>Grade Level</label>
           <select name="gradeLevel" value={formData.gradeLevel} onChange={handleChange} className={inputClasses}>
@@ -120,10 +72,10 @@ export const DLLForm: React.FC<Props> = ({ formData, setFormData }) => {
         </div>
         <div>
           <label className={labelClasses}>Learning Area</label>
-          <input name="learningArea" value={formData.learningArea} onChange={handleChange} className={inputClasses} placeholder="e.g. Science, Math, English" />
+          <input name="learningArea" value={formData.learningArea} onChange={handleChange} className={inputClasses} placeholder="e.g. Science" />
         </div>
         <div>
-          <label className={labelClasses}>Quarter / Week</label>
+          <label className={labelClasses}>Quarter & Week</label>
           <div className="flex gap-2">
             <input name="quarter" value={formData.quarter} onChange={handleChange} className={inputClasses} placeholder="Quarter" />
             <input name="week" value={formData.week} onChange={handleChange} className={inputClasses} placeholder="Week" />
@@ -131,133 +83,114 @@ export const DLLForm: React.FC<Props> = ({ formData, setFormData }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-          <label className={labelClasses}>Teaching Dates</label>
-          <input name="teachingDates" value={formData.teachingDates} onChange={handleChange} className={inputClasses} placeholder="e.g. October 12-16, 2024" />
+      {/* Exemplar Section (Highest Priority) */}
+      <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-lg space-y-4">
+        <div className="flex items-center gap-2 text-emerald-800">
+          <BookOpen size={18} />
+          <h3 className="text-sm font-bold uppercase tracking-tight">Lesson Exemplar / Reference Material</h3>
+          <span className="ml-auto flex items-center gap-1 text-[10px] bg-emerald-100 px-2 py-0.5 rounded text-emerald-700 font-bold">
+            <Sparkles size={10} /> AUTO-EXTRACTION
+          </span>
         </div>
-        <div>
-          <label className={labelClasses}>Teaching Time / Schedule</label>
-          <input name="teachingTime" value={formData.teachingTime} onChange={handleChange} className={inputClasses} placeholder="e.g. 7:30 - 8:30 AM" />
+        
+        <p className="text-[11px] text-emerald-700/80 leading-relaxed italic">
+          If provided, Gemini will extract the competencies, codes, and activities directly from your exemplar.
+        </p>
+
+        <textarea 
+          name="lessonExemplar" 
+          value={formData.lessonExemplar} 
+          onChange={handleChange} 
+          rows={4}
+          className={`${inputClasses} border-emerald-200 placeholder:text-emerald-300 focus:ring-emerald-500`} 
+          placeholder="Paste exemplar text here..."
+        />
+
+        <div 
+          onClick={() => fileInputRef.current?.click()}
+          className="border-2 border-dashed border-emerald-200 rounded-lg p-3 hover:border-emerald-400 cursor-pointer flex items-center gap-3 bg-white transition-colors"
+        >
+          <input type="file" ref={fileInputRef} onChange={(e) => handleFileChange(e, 'exemplarFile')} className="hidden" accept=".pdf,.txt,image/*" />
+          {formData.exemplarFile ? (
+            <>
+              <FileIcon size={20} className="text-emerald-500" />
+              <span className="text-xs truncate flex-1 font-medium text-emerald-700">{formData.exemplarFile.name}</span>
+              <button onClick={(e) => { e.stopPropagation(); removeFile('exemplarFile'); }} className="text-slate-400 hover:text-red-500"><X size={14} /></button>
+            </>
+          ) : (
+            <>
+              <Upload size={18} className="text-emerald-400" />
+              <span className="text-xs text-emerald-600 font-medium">Attach Lesson Exemplar File</span>
+            </>
+          )}
         </div>
       </div>
 
-      <div className="p-4 bg-slate-100 rounded-xl border border-slate-200 space-y-4">
-        <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2">
-          <ShieldCheck size={18} className="text-indigo-600" /> Approvals & Checking
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className={labelClasses}>Designated Checker Name</label>
-            <input name="checkerName" value={formData.checkerName} onChange={handleChange} className={inputClasses} placeholder="e.g. Master Teacher Name" />
+      {/* Competency Input (Mandatory if no Exemplar) */}
+      <div className="pt-4 border-t border-slate-100">
+        <div className="flex items-center gap-2 mb-1.5">
+          <label className={`${labelClasses} mb-0`}>Learning Competency</label>
+          <div className="group relative">
+            <Info size={12} className="text-slate-400 cursor-help" />
+            <div className="absolute bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-slate-800 text-white text-[10px] rounded shadow-lg z-50">
+              Mandatory if no Exemplar is provided above. Gemini will build daily objectives (1-2) based on this.
+            </div>
           </div>
-          <div>
-            <label className={labelClasses}>Checker Designation</label>
-            <input name="checkerDesignation" value={formData.checkerDesignation} onChange={handleChange} className={inputClasses} placeholder="e.g. Master Teacher I / Dept Head" />
-          </div>
+        </div>
+        <textarea 
+          name="competency" 
+          value={formData.competency} 
+          onChange={handleChange} 
+          rows={2}
+          className={`${inputClasses} ${!formData.lessonExemplar && !formData.exemplarFile ? 'border-indigo-300 ring-1 ring-indigo-50' : 'border-slate-200'} font-medium`} 
+          placeholder="e.g. Describe the components of a scientific investigation (S7MT-Ia-1)"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-100">
+        <div>
+          <label className={labelClasses}>Designated Checker</label>
+          <input name="checkerName" value={formData.checkerName} onChange={handleChange} className={inputClasses} placeholder="e.g. Maria Clara" />
+        </div>
+        <div>
+          <label className={labelClasses}>Checker Designation</label>
+          <input name="checkerDesignation" value={formData.checkerDesignation} onChange={handleChange} className={inputClasses} placeholder="e.g. Principal / Dept. Head" />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div>
-          <label className={labelClasses}>Learning Competency / Description</label>
-          <textarea 
-            name="competency" 
-            value={formData.competency} 
-            onChange={handleChange} 
-            rows={4}
-            className={inputClasses} 
-            placeholder="Paste the official K-12 competency here..."
-          />
-        </div>
-        <div>
-          <label className={`${labelClasses} text-indigo-700 flex justify-between items-center`}>
-            Lesson Exemplar (Upload or Paste)
-            {formData.exemplarFile && (
-              <span className="text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full flex items-center gap-1">
-                <FileCheck size={10} /> File Attached
-              </span>
-            )}
-          </label>
-          
-          <div className="space-y-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-4">
+          <div>
+            <label className={labelClasses}>School Logo</label>
             <div 
-              onClick={() => fileInputRef.current?.click()}
-              className={`relative border-2 border-dashed rounded-lg p-4 transition-all cursor-pointer flex flex-col items-center justify-center gap-2 ${
-                formData.exemplarFile 
-                  ? 'border-emerald-200 bg-emerald-50/30' 
-                  : 'border-slate-300 bg-slate-50 hover:bg-slate-100 hover:border-indigo-400'
-              }`}
+              onClick={() => logoInputRef.current?.click()}
+              className="border-2 border-dashed border-slate-200 rounded-lg p-3 hover:border-indigo-300 cursor-pointer flex items-center gap-3 bg-slate-50/50 transition-colors"
             >
-              <input 
-                type="file" 
-                ref={fileInputRef} 
-                onChange={(e) => handleFileChange(e, 'exemplarFile')} 
-                className="hidden" 
-                accept=".pdf,.txt,image/*"
-              />
-              
-              {formData.exemplarFile ? (
-                <div className="flex items-center gap-3 w-full">
-                  <div className="bg-emerald-100 p-2 rounded-lg text-emerald-600">
-                    <FileIcon size={20} />
-                  </div>
-                  <div className="flex-1 overflow-hidden">
-                    <p className="text-sm font-semibold text-emerald-800 truncate">{formData.exemplarFile.name}</p>
-                    <p className="text-[10px] text-emerald-600">Exemplar reference loaded</p>
-                  </div>
-                  <button 
-                    onClick={(e) => { e.stopPropagation(); removeFile('exemplarFile'); }}
-                    className="p-1.5 hover:bg-emerald-100 rounded-full text-emerald-600 transition-colors"
-                  >
-                    <X size={16} />
-                  </button>
-                </div>
+              <input type="file" ref={logoInputRef} onChange={(e) => handleFileChange(e, 'logoFile')} className="hidden" accept="image/*" />
+              {formData.logoFile ? (
+                <>
+                  <ImageIcon size={20} className="text-indigo-500" />
+                  <span className="text-xs truncate flex-1">{formData.logoFile.name}</span>
+                  <button onClick={(e) => { e.stopPropagation(); removeFile('logoFile'); }}><X size={14} /></button>
+                </>
               ) : (
                 <>
-                  <Upload className="text-slate-400 group-hover:text-indigo-500" size={24} />
-                  <p className="text-xs font-medium text-slate-500">Upload Exemplar (PDF, Image, or Text)</p>
-                  <p className="text-[10px] text-slate-400">Drag and drop or click to browse</p>
+                  <Upload size={18} className="text-slate-400" />
+                  <span className="text-xs text-slate-500 font-medium">Upload Logo (Optional)</span>
                 </>
               )}
             </div>
-
-            {!formData.exemplarFile && (
-              <textarea 
-                name="lessonExemplar" 
-                value={formData.lessonExemplar} 
-                onChange={handleChange} 
-                rows={3}
-                className={`${inputClasses} border-indigo-100 bg-indigo-50/50 text-xs`} 
-                placeholder="...or paste exemplar text directly here"
-              />
-            )}
+          </div>
+          <div>
+            <label className={labelClasses}>Resources / Sources</label>
+            <textarea name="sources" value={formData.sources} onChange={handleChange} rows={2} className={inputClasses} placeholder="Textbooks, references..." />
           </div>
         </div>
-      </div>
 
-      <div>
-        <label className={labelClasses}>Learning Resources / Sources</label>
-        <textarea 
-          name="sources" 
-          value={formData.sources} 
-          onChange={handleChange} 
-          rows={2}
-          className={inputClasses} 
-          placeholder="Textbooks, modules, websites..."
-        />
-      </div>
-
-      <div className="pt-2 border-t border-slate-100">
-        <label className={`${labelClasses} text-indigo-600`}>Custom Instructions / Specific prompts</label>
-        <textarea 
-          name="customInstructions" 
-          value={formData.customInstructions} 
-          onChange={handleChange} 
-          rows={3}
-          className={`${inputClasses} border-indigo-100 bg-indigo-50/30 focus:bg-white`} 
-          placeholder="e.g. 'Make it more hands-on', 'Include local scenarios from my community', 'Focus on 21st-century skills'..."
-        />
+        <div>
+          <label className={labelClasses}>Custom Instructions (AI Feedback)</label>
+          <textarea name="customInstructions" value={formData.customInstructions} onChange={handleChange} rows={5} className={inputClasses} placeholder="e.g. Focus on group work, use localized examples..." />
+        </div>
       </div>
     </div>
   );
