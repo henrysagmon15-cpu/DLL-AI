@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { GeneratedDLL, DLLInput } from '../types';
 
@@ -243,7 +242,7 @@ export const DLLPreview: React.FC<Props> = ({ dll, input }) => {
           <p className="mb-12 font-normal">Prepared by:</p>
           <div className="border-b border-black w-full mb-1"></div>
           <p className="font-bold uppercase tracking-tight">{input.teacher}</p>
-          <p className="text-[10px] font-normal">Teacher</p>
+          <p className="text-[10px] font-normal">{input.teacherPosition}</p>
         </div>
         
         {input.checkerName && (

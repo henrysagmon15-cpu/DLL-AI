@@ -1,8 +1,8 @@
-
 export interface DLLInput {
   school: string;
   gradeLevel: string;
   teacher: string;
+  teacherPosition: string;
   learningArea: string;
   teachingDates: string;
   teachingTime: string;
@@ -11,6 +11,8 @@ export interface DLLInput {
   checkerName: string;
   checkerDesignation: string;
   competency: string;
+  contentStandard: string;
+  performanceStandard: string;
   sources: string;
   customInstructions: string;
   lessonExemplar: string;

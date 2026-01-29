@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { DLLInput, GeneratedDLL } from "../types";
 
@@ -13,19 +12,23 @@ export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL>
     PRIMARY INSTRUCTIONS:
     1. EXTRACATION FIRST: If an Exemplar/Reference (Text: "${input.lessonExemplar || "None"}" or attached file) is provided, prioritize extracting the Learning Competencies and Objectives directly from it.
     2. MANDATORY COMPETENCY: If NO exemplar/file is provided, use this manually provided competency: "${input.competency}".
-    3. OBJECTIVES LIMIT: Provide EXACTLY 1 to 2 learning objectives per day. These objectives must be derived from the competency.
-    4. 45-MINUTE FEASIBILITY: Ensure that the objectives and the entire procedure (Review to Evaluation) can be realistically finished within a 45-minute lesson.
-    5. LOGICAL SEQUENCE: The 5-day flow must be a progressive sequence of the same learning competency or set of related competencies.
+    
+    CURRICULUM STANDARDS OVERRIDE:
+    3. CONTENT STANDARD: If the user provided this Content Standard: "${input.contentStandard || ""}", USE IT EXACTLY. If empty, generate a suitable one based on the competency/exemplar.
+    4. PERFORMANCE STANDARD: If the user provided this Performance Standard: "${input.performanceStandard || ""}", USE IT EXACTLY. If empty, generate a suitable one based on the competency/exemplar.
+
+    PROCEDURAL CONSTRAINTS:
+    5. OBJECTIVES LIMIT: Provide EXACTLY 1 to 2 learning objectives per day. These objectives must be derived from the competency.
+    6. 45-MINUTE FEASIBILITY: Ensure that the objectives and the entire procedure (Review to Evaluation) can be realistically finished within a 45-minute lesson.
+    7. LOGICAL SEQUENCE: The 5-day flow must be a progressive sequence of the same learning competency or set of related competencies.
 
     PEDAGOGICAL STRUCTURE:
-    - CONTENT STANDARD: What the learners should know.
-    - PERFORMANCE STANDARD: What the learners should be able to do.
     - PROCEDURES (A-J): Detailed daily steps. Step F must be a concrete Formative Assessment. Step I must be a specific Evaluation task with 3-5 items.
     - ANSWER KEY: Provide the correct answers for the Evaluation task in Step I.
 
     METADATA:
     - School: ${input.school}
-    - Teacher: ${input.teacher}
+    - Teacher: ${input.teacher} (${input.teacherPosition})
     - Grade Level: ${input.gradeLevel}
     - Learning Area: ${input.learningArea}
     - Quarter: ${input.quarter}

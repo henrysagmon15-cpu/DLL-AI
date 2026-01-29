@@ -1,7 +1,6 @@
-
 import React, { useRef } from 'react';
 import { DLLInput } from '../types';
-import { Upload, X, File as FileIcon, Image as ImageIcon, BookOpen, Sparkles, Info } from 'lucide-react';
+import { Upload, X, File as FileIcon, Image as ImageIcon, BookOpen, Sparkles, Info, Scale } from 'lucide-react';
 
 interface Props {
   formData: DLLInput;
@@ -62,6 +61,14 @@ export const DLLForm: React.FC<Props> = ({ formData, setFormData }) => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
+          <label className={labelClasses}>Teacher Position</label>
+          <input name="teacherPosition" value={formData.teacherPosition} onChange={handleChange} className={inputClasses} placeholder="e.g. Teacher I" />
+        </div>
+        <div>
+          <label className={labelClasses}>Learning Area</label>
+          <input name="learningArea" value={formData.learningArea} onChange={handleChange} className={inputClasses} placeholder="e.g. Science" />
+        </div>
+        <div>
           <label className={labelClasses}>Grade Level</label>
           <select name="gradeLevel" value={formData.gradeLevel} onChange={handleChange} className={inputClasses}>
             {Array.from({ length: 12 }, (_, i) => `Grade ${i + 1}`).map(g => (
@@ -70,15 +77,21 @@ export const DLLForm: React.FC<Props> = ({ formData, setFormData }) => {
             <option value="Kindergarten">Kindergarten</option>
           </select>
         </div>
-        <div>
-          <label className={labelClasses}>Learning Area</label>
-          <input name="learningArea" value={formData.learningArea} onChange={handleChange} className={inputClasses} placeholder="e.g. Science" />
-        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className={labelClasses}>Quarter & Week</label>
           <div className="flex gap-2">
             <input name="quarter" value={formData.quarter} onChange={handleChange} className={inputClasses} placeholder="Quarter" />
             <input name="week" value={formData.week} onChange={handleChange} className={inputClasses} placeholder="Week" />
+          </div>
+        </div>
+        <div>
+          <label className={labelClasses}>Teaching Dates & Time</label>
+          <div className="flex gap-2">
+            <input name="teachingDates" value={formData.teachingDates} onChange={handleChange} className={inputClasses} placeholder="Dates" />
+            <input name="teachingTime" value={formData.teachingTime} onChange={handleChange} className={inputClasses} placeholder="Time" />
           </div>
         </div>
       </div>
@@ -126,25 +139,63 @@ export const DLLForm: React.FC<Props> = ({ formData, setFormData }) => {
         </div>
       </div>
 
-      {/* Competency Input (Mandatory if no Exemplar) */}
-      <div className="pt-4 border-t border-slate-100">
-        <div className="flex items-center gap-2 mb-1.5">
-          <label className={`${labelClasses} mb-0`}>Learning Competency</label>
-          <div className="group relative">
-            <Info size={12} className="text-slate-400 cursor-help" />
-            <div className="absolute bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-slate-800 text-white text-[10px] rounded shadow-lg z-50">
-              Mandatory if no Exemplar is provided above. Gemini will build daily objectives (1-2) based on this.
+      {/* Manual Curriculum Standards Section */}
+      <div className="p-5 bg-indigo-50/50 border border-indigo-100 rounded-xl space-y-4">
+        <div className="flex items-center gap-2 text-indigo-900 mb-2">
+          <Scale size={18} />
+          <h3 className="text-sm font-bold uppercase tracking-tight">Curriculum Standards (Manual Option)</h3>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <label className={labelClasses}>Content Standard</label>
+              <Info size={12} className="text-slate-400 cursor-help" title="What the learners should know." />
             </div>
+            <textarea 
+              name="contentStandard" 
+              value={formData.contentStandard} 
+              onChange={handleChange} 
+              rows={2}
+              className={`${inputClasses} border-indigo-200`} 
+              placeholder="Leave blank to auto-generate..."
+            />
+          </div>
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <label className={labelClasses}>Performance Standard</label>
+              <Info size={12} className="text-slate-400 cursor-help" title="What the learners should be able to do." />
+            </div>
+            <textarea 
+              name="performanceStandard" 
+              value={formData.performanceStandard} 
+              onChange={handleChange} 
+              rows={2}
+              className={`${inputClasses} border-indigo-200`} 
+              placeholder="Leave blank to auto-generate..."
+            />
           </div>
         </div>
-        <textarea 
-          name="competency" 
-          value={formData.competency} 
-          onChange={handleChange} 
-          rows={2}
-          className={`${inputClasses} ${!formData.lessonExemplar && !formData.exemplarFile ? 'border-indigo-300 ring-1 ring-indigo-50' : 'border-slate-200'} font-medium`} 
-          placeholder="e.g. Describe the components of a scientific investigation (S7MT-Ia-1)"
-        />
+
+        <div className="pt-2">
+          <div className="flex items-center gap-2 mb-1.5">
+            <label className={`${labelClasses} mb-0`}>Learning Competency</label>
+            <div className="group relative">
+              <Info size={12} className="text-slate-400 cursor-help" />
+              <div className="absolute bottom-full mb-2 hidden group-hover:block w-48 p-2 bg-slate-800 text-white text-[10px] rounded shadow-lg z-50">
+                Mandatory if no Exemplar is provided above. Gemini will build daily objectives (1-2) based on this.
+              </div>
+            </div>
+          </div>
+          <textarea 
+            name="competency" 
+            value={formData.competency} 
+            onChange={handleChange} 
+            rows={2}
+            className={`${inputClasses} ${!formData.lessonExemplar && !formData.exemplarFile ? 'border-indigo-400 ring-1 ring-indigo-50' : 'border-indigo-200'} font-medium`} 
+            placeholder="e.g. Describe the components of a scientific investigation (S7MT-Ia-1)"
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-100">

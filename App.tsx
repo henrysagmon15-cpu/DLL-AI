@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { DLLInput, GeneratedDLL } from './types';
 import { generateDLLContent } from './services/geminiService';
@@ -11,6 +10,7 @@ const App: React.FC = () => {
     school: 'Villa Kananga Integrated School',
     gradeLevel: 'Grade 7',
     teacher: 'Henry Joshua E. Sagmon',
+    teacherPosition: 'Teacher I',
     learningArea: 'Science',
     teachingDates: 'June 23-27, 2025',
     teachingTime: '1:00-1:45 PM',
@@ -19,6 +19,8 @@ const App: React.FC = () => {
     checkerName: '',
     checkerDesignation: 'Master Teacher I / Department Head',
     competency: '', 
+    contentStandard: '',
+    performanceStandard: '',
     sources: 'Science 7 Learner\'s Material',
     customInstructions: '',
     lessonExemplar: ''
