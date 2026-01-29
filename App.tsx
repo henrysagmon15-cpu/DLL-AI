@@ -3,7 +3,7 @@ import { DLLInput, GeneratedDLL } from './types';
 import { generateDLLContent } from './services/geminiService';
 import { DLLForm } from './components/DLLForm';
 import { DLLPreview } from './components/DLLPreview';
-import { Wand2, Loader2, Printer, ArrowLeft, FileText, ChevronDown, Copy, Check, AlertCircle, Settings } from 'lucide-react';
+import { Wand2, Loader2, Printer, ArrowLeft, FileText, ChevronDown, Copy, Check, AlertCircle } from 'lucide-react';
 
 const App: React.FC = () => {
   const [formData, setFormData] = useState<DLLInput>({
@@ -165,14 +165,14 @@ const App: React.FC = () => {
       {isGenerating && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100] flex flex-col items-center justify-center text-white text-center px-4">
           <Loader2 className="w-12 h-12 animate-spin mb-4" />
-          <p className="text-lg font-bold uppercase tracking-wider">Gemini is Architecting your Lesson Log...</p>
-          <p className="text-sm opacity-80 mt-2">Extracting competencies and building a feasible 45-minute daily flow.</p>
+          <p className="text-lg font-bold uppercase tracking-wider">VKIS DLL AI is Architecting your Lesson Log...</p>
+          <p className="text-sm opacity-80 mt-2 text-center max-w-md">Villa Kananga Integrated School Daily Lesson Log AI is generating your pedagogical content.</p>
         </div>
       )}
 
       <header className="bg-indigo-700 text-white shadow no-print">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold uppercase tracking-tight">Gemini DLL Architect</h1>
+          <h1 className="text-xl font-bold uppercase tracking-tight">Villa Kananga Integrated School DLL AI</h1>
           {generatedDLL && (
             <div className="flex gap-2">
               <button onClick={() => setGeneratedDLL(null)} className="px-4 py-2 bg-indigo-600 rounded text-sm font-bold flex items-center gap-2">
