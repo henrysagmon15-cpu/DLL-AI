@@ -22,15 +22,19 @@ export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL>
     3. CONTENT STANDARD: If the user provided this Content Standard: "${input.contentStandard || ""}", USE IT EXACTLY. If empty, generate a suitable one based on the competency/exemplar.
     4. PERFORMANCE STANDARD: If the user provided this Performance Standard: "${input.performanceStandard || ""}", USE IT EXACTLY. If empty, generate a suitable one based on the competency/exemplar.
 
+    CONTENT DUPLICATION RULES (CRITICAL):
+    5. TUESDAY: This day MUST be an EXACT COPY of Monday's content (objectives, topic, and all procedural steps A-J).
+    6. THURSDAY: This day MUST be an EXACT COPY of Wednesday's content (objectives, topic, and all procedural steps A-J).
+    7. FRIDAY: This should be a distinct day, typically used for Weekly Test, Review, or the final progression of the week's competency.
+
     PROCEDURAL CONSTRAINTS:
-    5. OBJECTIVES LIMIT: Provide EXACTLY 1 to 2 learning objectives per day. These objectives must be derived from the competency.
-    6. 45-MINUTE FEASIBILITY: Ensure that the objectives and the entire procedure (Review to Evaluation) can be realistically finished within a 45-minute lesson.
-    7. LOGICAL SEQUENCE: The 5-day flow must be a progressive sequence of the same learning competency or set of related competencies.
+    8. OBJECTIVES LIMIT: Provide EXACTLY 1 to 2 learning objectives per day. These objectives must be derived from the competency.
+    9. 45-MINUTE FEASIBILITY: Ensure that the objectives and the entire procedure (Review to Evaluation) can be realistically finished within a 45-minute lesson.
 
     STRICT ITEM COUNT REQUIREMENTS:
-    8. EVALUATION (Step I): You MUST provide EXACTLY 5 specific evaluation items (e.g., Multiple Choice, Fill in the Blanks, or Identification) for EACH day.
-    9. ANSWER KEY: You MUST provide EXACTLY 5 answers corresponding to the 5 evaluation items for EACH day.
-    10. FORMATIVE ASSESSMENT (Step F): This MUST be a concrete activity or set of 2-3 questions that check for understanding BEFORE the final evaluation. It should not be vague.
+    10. EVALUATION (Step I): You MUST provide EXACTLY 5 specific evaluation items (e.g., Multiple Choice, Fill in the Blanks, or Identification) for EACH day. Use a numbered list.
+    11. ANSWER KEY: You MUST provide EXACTLY 5 answers corresponding to the 5 evaluation items for EACH day.
+    12. FORMATIVE ASSESSMENT (Step F / Mastery): This MUST be a concrete classroom activity or set of 2-3 oral/written questions that check for understanding BEFORE the final evaluation. Avoid vague statements; provide the actual activity description or questions.
 
     PEDAGOGICAL STRUCTURE:
     - PROCEDURES (A-J): Detailed daily steps. 
@@ -64,7 +68,7 @@ export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL>
       examples: { type: Type.STRING },
       discussion1: { type: Type.STRING },
       discussion2: { type: Type.STRING },
-      mastery: { type: Type.STRING, description: "A concrete Formative Assessment activity or set of questions." },
+      mastery: { type: Type.STRING, description: "A concrete Formative Assessment activity or set of actual questions used in class." },
       application: { type: Type.STRING },
       generalization: { type: Type.STRING },
       evaluation: { type: Type.STRING, description: "EXACTLY 5 quiz questions or tasks." },
