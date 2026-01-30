@@ -27,10 +27,14 @@ export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL>
     6. 45-MINUTE FEASIBILITY: Ensure that the objectives and the entire procedure (Review to Evaluation) can be realistically finished within a 45-minute lesson.
     7. LOGICAL SEQUENCE: The 5-day flow must be a progressive sequence of the same learning competency or set of related competencies.
 
+    STRICT ITEM COUNT REQUIREMENTS:
+    8. EVALUATION (Step I): You MUST provide EXACTLY 5 specific evaluation items (e.g., Multiple Choice, Fill in the Blanks, or Identification) for EACH day.
+    9. ANSWER KEY: You MUST provide EXACTLY 5 answers corresponding to the 5 evaluation items for EACH day.
+    10. FORMATIVE ASSESSMENT (Step F): This MUST be a concrete activity or set of 2-3 questions that check for understanding BEFORE the final evaluation. It should not be vague.
+
     PEDAGOGICAL STRUCTURE:
-    - PROCEDURES (A-J): Detailed daily steps. Step F must be a concrete Formative Assessment. Step I must be a specific Evaluation task with 3-5 items.
-    - ANSWER KEY: Provide the correct answers for the Evaluation task in Step I.
-    - REMARKS: The 'remarks' field for each day must be an EMPTY STRING (""). Do not input any information here; leave it completely blank.
+    - PROCEDURES (A-J): Detailed daily steps. 
+    - REMARKS: The 'remarks' field for each day must be an EMPTY STRING (""). Leave it completely blank.
 
     METADATA:
     - School: ${input.school}
@@ -60,11 +64,11 @@ export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL>
       examples: { type: Type.STRING },
       discussion1: { type: Type.STRING },
       discussion2: { type: Type.STRING },
-      mastery: { type: Type.STRING, description: "Leads to formative assessment." },
+      mastery: { type: Type.STRING, description: "A concrete Formative Assessment activity or set of questions." },
       application: { type: Type.STRING },
       generalization: { type: Type.STRING },
-      evaluation: { type: Type.STRING, description: "Actual quiz questions/tasks." },
-      answerKey: { type: Type.STRING, description: "Answers for the evaluation questions." },
+      evaluation: { type: Type.STRING, description: "EXACTLY 5 quiz questions or tasks." },
+      answerKey: { type: Type.STRING, description: "EXACTLY 5 answers corresponding to the evaluation items." },
       remediation: { type: Type.STRING },
       remarks: { type: Type.STRING, description: "Must be an empty string." }
     },
