@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { DLLInput } from '../types';
-import { Upload, X, File as FileIcon, Image as ImageIcon, BookOpen, Sparkles, Info, Scale } from 'lucide-react';
+import { Upload, X, File as FileIcon, Image as ImageIcon, BookOpen, Sparkles, Info, Scale, Paperclip } from 'lucide-react';
 
 interface Props {
   formData: DLLInput;
@@ -10,6 +10,7 @@ interface Props {
 export const DLLForm: React.FC<Props> = ({ formData, setFormData }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
+  const referencesInputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -35,10 +36,40 @@ export const DLLForm: React.FC<Props> = ({ formData, setFormData }) => {
     }
   };
 
+  const handleReferencesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Fix: Explicitly cast Array.from result to File[] to resolve 'unknown' type inference errors (Lines 51, 52, 57)
+    const files = Array.from(e.target.files || []) as File[];
+    files.forEach((file: File) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = (reader.result as string).split(',')[1];
+        setFormData(prev => ({
+          ...prev,
+          referenceFiles: [
+            ...(prev.referenceFiles || []),
+            {
+              data: base64String,
+              mimeType: file.type,
+              name: file.name
+            }
+          ]
+        }));
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
   const removeFile = (field: 'exemplarFile' | 'logoFile') => {
     setFormData(prev => ({ ...prev, [field]: undefined }));
     if (field === 'exemplarFile' && fileInputRef.current) fileInputRef.current.value = '';
     if (field === 'logoFile' && logoInputRef.current) logoInputRef.current.value = '';
+  };
+
+  const removeReferenceFile = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      referenceFiles: prev.referenceFiles?.filter((_, i) => i !== index)
+    }));
   };
 
   const inputClasses = "w-full p-2.5 border border-slate-300 rounded focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none bg-white text-sm";
@@ -100,7 +131,7 @@ export const DLLForm: React.FC<Props> = ({ formData, setFormData }) => {
       <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-lg space-y-4">
         <div className="flex items-center gap-2 text-emerald-800">
           <BookOpen size={18} />
-          <h3 className="text-sm font-bold uppercase tracking-tight">Lesson Exemplar / Reference Material</h3>
+          <h3 className="text-sm font-bold uppercase tracking-tight">Lesson Exemplar / Primary Reference</h3>
           <span className="ml-auto flex items-center gap-1 text-[10px] bg-emerald-100 px-2 py-0.5 rounded text-emerald-700 font-bold">
             <Sparkles size={10} /> AUTO-EXTRACTION
           </span>
@@ -198,6 +229,48 @@ export const DLLForm: React.FC<Props> = ({ formData, setFormData }) => {
         </div>
       </div>
 
+      {/* Reference Materials Section */}
+      <div className="p-4 bg-slate-50 border border-slate-200 rounded-lg space-y-3">
+        <div className="flex items-center gap-2 text-slate-800">
+          <Paperclip size={18} />
+          <h3 className="text-sm font-bold uppercase tracking-tight">Additional Reference Files</h3>
+        </div>
+        <p className="text-[11px] text-slate-500 italic">Upload additional textbooks, worksheets, or references for context.</p>
+        
+        <div 
+          onClick={() => referencesInputRef.current?.click()}
+          className="border-2 border-dashed border-slate-300 rounded-lg p-3 hover:border-slate-400 cursor-pointer flex items-center justify-center gap-3 bg-white transition-colors"
+        >
+          <input 
+            type="file" 
+            ref={referencesInputRef} 
+            onChange={handleReferencesChange} 
+            className="hidden" 
+            multiple 
+            accept=".pdf,.txt,.doc,.docx,image/*" 
+          />
+          <Upload size={18} className="text-slate-400" />
+          <span className="text-xs text-slate-600 font-medium">Click to upload multiple references</span>
+        </div>
+
+        {formData.referenceFiles && formData.referenceFiles.length > 0 && (
+          <div className="grid grid-cols-1 gap-2 mt-2">
+            {formData.referenceFiles.map((file, idx) => (
+              <div key={idx} className="flex items-center gap-2 bg-white p-2 border border-slate-200 rounded text-xs">
+                <FileIcon size={14} className="text-indigo-400" />
+                <span className="flex-1 truncate font-medium">{file.name}</span>
+                <button 
+                  onClick={(e) => { e.stopPropagation(); removeReferenceFile(idx); }} 
+                  className="text-slate-400 hover:text-red-500"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-slate-100">
         <div>
           <label className={labelClasses}>Designated Checker</label>
@@ -233,7 +306,7 @@ export const DLLForm: React.FC<Props> = ({ formData, setFormData }) => {
             </div>
           </div>
           <div>
-            <label className={labelClasses}>Resources / Sources</label>
+            <label className={labelClasses}>Resources / Sources (Text)</label>
             <textarea name="sources" value={formData.sources} onChange={handleChange} rows={2} className={inputClasses} placeholder="Textbooks, references..." />
           </div>
         </div>
