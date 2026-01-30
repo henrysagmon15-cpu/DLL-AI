@@ -44,6 +44,7 @@ export interface DayPlan {
   evaluation: string;
   answerKey: string;
   remediation: string;
+  remarks: string;
 }
 
 export interface GeneratedDLL {

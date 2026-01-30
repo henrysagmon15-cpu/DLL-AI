@@ -30,6 +30,7 @@ export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL>
     PEDAGOGICAL STRUCTURE:
     - PROCEDURES (A-J): Detailed daily steps. Step F must be a concrete Formative Assessment. Step I must be a specific Evaluation task with 3-5 items.
     - ANSWER KEY: Provide the correct answers for the Evaluation task in Step I.
+    - REMARKS: The 'remarks' field for each day must be an EMPTY STRING (""). Do not input any information here; leave it completely blank.
 
     METADATA:
     - School: ${input.school}
@@ -64,9 +65,10 @@ export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL>
       generalization: { type: Type.STRING },
       evaluation: { type: Type.STRING, description: "Actual quiz questions/tasks." },
       answerKey: { type: Type.STRING, description: "Answers for the evaluation questions." },
-      remediation: { type: Type.STRING }
+      remediation: { type: Type.STRING },
+      remarks: { type: Type.STRING, description: "Must be an empty string." }
     },
-    required: ["competencyDesc", "competencyCode", "topic", "objectives", "review", "purpose", "examples", "discussion1", "discussion2", "mastery", "application", "generalization", "evaluation", "answerKey", "remediation"]
+    required: ["competencyDesc", "competencyCode", "topic", "objectives", "review", "purpose", "examples", "discussion1", "discussion2", "mastery", "application", "generalization", "evaluation", "answerKey", "remediation", "remarks"]
   };
 
   const parts: any[] = [{ text: textPrompt }];

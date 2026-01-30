@@ -212,7 +212,11 @@ export const DLLPreview: React.FC<Props> = ({ dll, input }) => {
 
           <tr className="bg-[#f59e0b] text-black font-bold border border-black">
             <td className="text-[11px] py-1.5 uppercase border border-black pl-2">V. REMARKS</td>
-            <td colSpan={5} className="border border-black"></td>
+            {days.map(day => (
+              <td key={day} className="text-[10px] border border-black p-2 align-top bg-white font-normal">
+                {renderContent(dll.dailyPlans[day].remarks)}
+              </td>
+            ))}
           </tr>
 
           <tr className="bg-white">
