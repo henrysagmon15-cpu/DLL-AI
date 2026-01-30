@@ -147,10 +147,15 @@ export const DLLPreview: React.FC<Props> = ({ dll, input }) => {
               Objectives <span className="text-red-600 font-bold">(Indicate the<br />code)</span>
             </td>
             {days.map(day => (
-              <td key={day} className="text-[10px] border border-black p-2">
-                <div className="font-bold mb-1">{dll.dailyPlans[day].competencyDesc}</div>
-                <div className="text-red-600 font-bold mb-1">{dll.dailyPlans[day].competencyCode}</div>
-                <div className="mt-1 border-t border-slate-100 pt-1">
+              <td key={day} className="text-[10px] border border-black p-2 max-w-[200px] align-top overflow-hidden">
+                <div className="font-bold mb-0.5 leading-tight line-clamp-3" title={dll.dailyPlans[day].competencyDesc}>
+                  {dll.dailyPlans[day].competencyDesc}
+                </div>
+                <div className="text-red-600 font-bold mb-2 leading-tight">
+                  {dll.dailyPlans[day].competencyCode}
+                </div>
+                <div className="mt-1 border-t border-slate-200 pt-1">
+                  <span className="text-[8px] uppercase font-bold text-slate-500 block mb-1">Unpacked Objective:</span>
                   {renderContent(dll.dailyPlans[day].objectives, true)}
                 </div>
               </td>
@@ -213,7 +218,7 @@ export const DLLPreview: React.FC<Props> = ({ dll, input }) => {
           <tr className="bg-[#f59e0b] text-black font-bold border border-black">
             <td className="text-[11px] py-1.5 uppercase border border-black pl-2">V. REMARKS</td>
             {days.map(day => (
-              <td key={day} className="text-[10px] border border-black p-2 align-top bg-white font-normal">
+              <td key={day} className="text-[10px] border border-black p-2 align-top bg-white font-normal h-8">
                 {renderContent(dll.dailyPlans[day].remarks)}
               </td>
             ))}
@@ -234,7 +239,7 @@ export const DLLPreview: React.FC<Props> = ({ dll, input }) => {
           ].map((refLabel) => (
             <tr key={refLabel}>
               <td className="text-[10px] border border-black p-2 leading-tight">{refLabel}</td>
-              {days.map(d => <td key={d} className="border border-black p-2"></td>)}
+              {days.map(d => <td key={d} className="border border-black p-2 h-8"></td>)}
             </tr>
           ))}
         </tbody>

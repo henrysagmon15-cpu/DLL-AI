@@ -26,11 +26,6 @@ export interface DLLInput {
     mimeType: string;
     name: string;
   };
-  referenceFiles?: {
-    data: string;
-    mimeType: string;
-    name: string;
-  }[];
 }
 
 export interface DayPlan {

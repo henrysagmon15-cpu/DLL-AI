@@ -11,34 +11,27 @@ export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL>
   const ai = new GoogleGenAI({ apiKey });
   const model = "gemini-3-flash-preview";
 
-  const referenceFileNames = input.referenceFiles?.map(f => f.name).join(", ") || "None";
-
   const textPrompt = `
     Generate a professional and detailed DepEd K-12 Daily Lesson Log (DLL) for a full week (Monday to Friday).
 
     PRIMARY INSTRUCTIONS:
-    1. EXTRACATION FIRST: If an Exemplar/Reference (Text: "${input.lessonExemplar || "None"}" or attached files) is provided, prioritize extracting the Learning Competencies and Objectives directly from them.
+    1. EXTRACTION FIRST: If an Exemplar/Reference (Text: "${input.lessonExemplar || "None"}" or attached file) is provided, prioritize extracting the Learning Competencies and Objectives directly from it.
     2. MANDATORY COMPETENCY: If NO exemplar/file is provided, use this manually provided competency: "${input.competency}".
     
     CURRICULUM STANDARDS OVERRIDE:
     3. CONTENT STANDARD: If the user provided this Content Standard: "${input.contentStandard || ""}", USE IT EXACTLY. If empty, generate a suitable one based on the competency/exemplar.
     4. PERFORMANCE STANDARD: If the user provided this Performance Standard: "${input.performanceStandard || ""}", USE IT EXACTLY. If empty, generate a suitable one based on the competency/exemplar.
 
-    CONTENT PROGRESSION RULES:
-    5. DAILY PROGRESSION: By default, each day (Monday to Friday) should show a logical progression of the lesson. 
-    6. CONDITIONAL DUPLICATION: ONLY make the content for Monday/Tuesday or Wednesday/Thursday identical IF the user explicitly requests it in the Custom Instructions: "${input.customInstructions}". Otherwise, ensure each day builds upon the previous one.
-
     PROCEDURAL CONSTRAINTS:
-    7. OBJECTIVES LIMIT: Provide EXACTLY 1 to 2 learning objectives per day. These objectives must be derived from the competency.
-    8. 45-MINUTE FEASIBILITY: Ensure that the objectives and the entire procedure (Review to Evaluation) can be realistically finished within a 45-minute lesson.
+    5. OBJECTIVES LIMIT: Provide EXACTLY 1 learning objective per day. 
+    6. UNPACKED OBJECTIVES DEFINITION: The daily objective MUST be an "unpacked" version of the competency. This means it must be at a LOWER cognitive level or the SAME cognitive level as the main competency (referencing Bloom's Taxonomy). It must be specific, measurable, and achievable within 45 minutes.
+    7. 45-MINUTE FEASIBILITY: Ensure that the objective and the entire procedure (Review to Evaluation) can be realistically finished within a 45-minute lesson.
+    8. LOGICAL SEQUENCE: The 5-day flow must be a progressive sequence of the same learning competency or set of related competencies.
 
     STRICT ITEM COUNT REQUIREMENTS:
-    9. EVALUATION (Step I): You MUST provide EXACTLY 5 specific evaluation items (e.g., Multiple Choice, Fill in the Blanks, or Identification) for EACH day. Use a numbered list.
+    9. EVALUATION (Step I): You MUST provide EXACTLY 5 specific evaluation items (e.g., Multiple Choice, Fill in the Blanks, or Identification) for EACH day.
     10. ANSWER KEY: You MUST provide EXACTLY 5 answers corresponding to the 5 evaluation items for EACH day.
-    11. FORMATIVE ASSESSMENT (Step F / Mastery): This MUST be a concrete classroom activity or set of 2-3 oral/written questions that check for understanding BEFORE the final evaluation. Avoid vague statements; provide the actual activity description or questions.
-
-    RESOURCE MAPPING:
-    12. OTHER LEARNING RESOURCES (III.B): You MUST populate the 'otherResources' field using the user-provided sources text: "${input.sources}". Additionally, mention these uploaded reference files: "${referenceFileNames}". Ensure this field is descriptive and professional.
+    11. FORMATIVE ASSESSMENT (Step F): This MUST be a concrete activity or set of 2-3 specific questions that check for understanding BEFORE the final evaluation. Avoid vague descriptions like "Check for understanding".
 
     PEDAGOGICAL STRUCTURE:
     - PROCEDURES (A-J): Detailed daily steps. 
@@ -53,8 +46,6 @@ export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL>
     - Week: ${input.week}
     - Custom Instructions: ${input.customInstructions}
 
-    Note: Multiple reference files may be attached. Use all provided data for context.
-
     Return the result as a strictly valid JSON object.
   `;
 
@@ -67,14 +58,14 @@ export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL>
       objectives: { 
         type: Type.ARRAY, 
         items: { type: Type.STRING },
-        description: "Exactly 1 or 2 specific, measurable objectives feasible for a 45-minute lesson."
+        description: "Exactly 1 specific, measurable objective at an equal or lower cognitive level than the competency."
       },
       review: { type: Type.STRING },
       purpose: { type: Type.STRING },
       examples: { type: Type.STRING },
       discussion1: { type: Type.STRING },
       discussion2: { type: Type.STRING },
-      mastery: { type: Type.STRING, description: "A concrete Formative Assessment activity or set of actual questions used in class." },
+      mastery: { type: Type.STRING, description: "A concrete Formative Assessment activity or set of questions." },
       application: { type: Type.STRING },
       generalization: { type: Type.STRING },
       evaluation: { type: Type.STRING, description: "EXACTLY 5 quiz questions or tasks." },
@@ -93,17 +84,6 @@ export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL>
         data: input.exemplarFile.data,
         mimeType: input.exemplarFile.mimeType
       }
-    });
-  }
-
-  if (input.referenceFiles && input.referenceFiles.length > 0) {
-    input.referenceFiles.forEach(file => {
-      parts.push({
-        inlineData: {
-          data: file.data,
-          mimeType: file.mimeType
-        }
-      });
     });
   }
 
