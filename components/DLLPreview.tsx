@@ -151,10 +151,12 @@ export const DLLPreview: React.FC<Props> = ({ dll, input }) => {
                 <div className="font-bold mb-0.5 leading-tight line-clamp-3" title={dll.dailyPlans[day].competencyDesc}>
                   {dll.dailyPlans[day].competencyDesc}
                 </div>
-                <div className="text-red-600 font-bold mb-2 leading-tight">
-                  {dll.dailyPlans[day].competencyCode}
-                </div>
-                <div className="mt-1 border-t border-slate-200 pt-1">
+                {dll.dailyPlans[day].competencyCode && (
+                  <div className="text-red-600 font-bold mb-2 leading-tight">
+                    {dll.dailyPlans[day].competencyCode}
+                  </div>
+                )}
+                <div className={`mt-1 border-t border-slate-200 pt-1 ${!dll.dailyPlans[day].competencyCode ? 'mt-3' : ''}`}>
                   <span className="text-[8px] uppercase font-bold text-slate-500 block mb-1">Unpacked Objective:</span>
                   {renderContent(dll.dailyPlans[day].objectives, true)}
                 </div>

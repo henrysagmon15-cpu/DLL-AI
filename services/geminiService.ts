@@ -22,16 +22,19 @@ export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL>
     3. CONTENT STANDARD: If the user provided this Content Standard: "${input.contentStandard || ""}", USE IT EXACTLY. If empty, generate a suitable one based on the competency/exemplar.
     4. PERFORMANCE STANDARD: If the user provided this Performance Standard: "${input.performanceStandard || ""}", USE IT EXACTLY. If empty, generate a suitable one based on the competency/exemplar.
 
+    CODE HALLUCINATION PREVENTION:
+    5. NO FAKE CODES: If a specific competency code (e.g., "S7MT-Ia-1") is NOT explicitly found in the provided competency string or the attached exemplar, the 'competencyCode' field MUST be an EMPTY STRING (""). DO NOT invent, guess, or generate a random alphanumeric code.
+
     PROCEDURAL CONSTRAINTS:
-    5. OBJECTIVES LIMIT: Provide EXACTLY 1 learning objective per day. 
-    6. UNPACKED OBJECTIVES DEFINITION: The daily objective MUST be an "unpacked" version of the competency. This means it must be at a LOWER cognitive level or the SAME cognitive level as the main competency (referencing Bloom's Taxonomy). It must be specific, measurable, and achievable within 45 minutes.
-    7. 45-MINUTE FEASIBILITY: Ensure that the objective and the entire procedure (Review to Evaluation) can be realistically finished within a 45-minute lesson.
-    8. LOGICAL SEQUENCE: The 5-day flow must be a progressive sequence of the same learning competency or set of related competencies.
+    6. OBJECTIVES LIMIT: Provide EXACTLY 1 learning objective per day. 
+    7. UNPACKED OBJECTIVES DEFINITION: The daily objective MUST be an "unpacked" version of the competency. This means it must be at a LOWER cognitive level or the SAME cognitive level as the main competency (referencing Bloom's Taxonomy). It must be specific, measurable, and achievable within 45 minutes.
+    8. 45-MINUTE FEASIBILITY: Ensure that the objective and the entire procedure (Review to Evaluation) can be realistically finished within a 45-minute lesson.
+    9. LOGICAL SEQUENCE: The 5-day flow must be a progressive sequence of the same learning competency or set of related competencies.
 
     STRICT ITEM COUNT REQUIREMENTS:
-    9. EVALUATION (Step I): You MUST provide EXACTLY 5 specific evaluation items (e.g., Multiple Choice, Fill in the Blanks, or Identification) for EACH day.
-    10. ANSWER KEY: You MUST provide EXACTLY 5 answers corresponding to the 5 evaluation items for EACH day.
-    11. FORMATIVE ASSESSMENT (Step F): This MUST be a concrete activity or set of 2-3 specific questions that check for understanding BEFORE the final evaluation. Avoid vague descriptions like "Check for understanding".
+    10. EVALUATION (Step I): You MUST provide EXACTLY 5 specific evaluation items (e.g., Multiple Choice, Fill in the Blanks, or Identification) for EACH day.
+    11. ANSWER KEY: You MUST provide EXACTLY 5 answers corresponding to the 5 evaluation items for EACH day.
+    12. FORMATIVE ASSESSMENT (Step F): This MUST be a concrete activity or set of 2-3 specific questions that check for understanding BEFORE the final evaluation. Avoid vague descriptions like "Check for understanding".
 
     PEDAGOGICAL STRUCTURE:
     - PROCEDURES (A-J): Detailed daily steps. 
@@ -53,7 +56,7 @@ export const generateDLLContent = async (input: DLLInput): Promise<GeneratedDLL>
     type: Type.OBJECT,
     properties: {
       competencyDesc: { type: Type.STRING, description: "The full description of the DepEd competency." },
-      competencyCode: { type: Type.STRING, description: "The code like S7MT-Ia-1." },
+      competencyCode: { type: Type.STRING, description: "The code like S7MT-Ia-1. MUST be empty string if no code is provided in input." },
       topic: { type: Type.STRING, description: "Short title of the daily lesson." },
       objectives: { 
         type: Type.ARRAY, 
